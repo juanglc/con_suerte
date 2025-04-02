@@ -4,20 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c2a634e6-16fd-48b7-b79d-19ea66034f71" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/PythonProject5.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/numero.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/styles.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/ganador.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vercel.json" afterDir="false" />
-    </list>
+    <list default="true" id="c2a634e6-16fd-48b7-b79d-19ea66034f71" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -34,6 +21,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "juanglc"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/juanglc/con_suerte.git",
+    "accountId": "6723484a-4373-483a-af2f-76fba86c2a11"
+  }
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
 }</component>
