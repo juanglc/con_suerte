@@ -8,8 +8,19 @@ import redis
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")  # Cambia esto con tu URL de Redis en producción
 redis_client = redis.StrictRedis.from_url(REDIS_URL, decode_responses=True)
 
+# Verificar conexión a Redis
+def check_redis_connection():
+    try:
+        redis_client.ping()
+        print("Conectado a Redis exitosamente")
+    except redis.ConnectionError:
+        print("Error: No se pudo conectar a Redis")
+        exit(1)
+
+check_redis_connection()
+
 def reset_session():
-    session.clear()  # Reinicia los valores de la sesión sin borrar los archivos
+    redis_client.flushdb()  # Reinicia los valores de la sesión limpiando Redis
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -17,6 +28,7 @@ app.config['SESSION_TYPE'] = 'redis'
 app.config['SESSION_PERMANENT'] = False
 app.config['SESSION_USE_SIGNER'] = True
 app.config['SESSION_REDIS'] = redis_client
+
 Session(app)
 
 @app.route('/')
@@ -71,8 +83,7 @@ def ganador(dic_num):
 
 @app.route('/regenerar')
 def regenerar():
-    session.pop('dictionaries', None)
-    session.pop('winners', None)
+    reset_session()  # Limpia Redis completamente
     session['dictionaries'] = {
         'dic1': generar_diccionario(),
         'dic2': generar_diccionario(),
