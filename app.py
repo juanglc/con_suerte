@@ -7,20 +7,20 @@ app.secret_key = os.urandom(24)
 
 # Diccionario global para almacenar los diccionarios y los ganadores
 data = {
-    'dictionaries': {
-        'dic1': generar_diccionario(),
-        'dic2': generar_diccionario(),
-        'dic3': generar_diccionario()
-    },
+    'dictionaries': {},
     'winners': {}
 }
 
-# Generar ganadores al iniciar
-for dic_key in data['dictionaries']:
-    data['winners'][dic_key] = escoger_numero(data['dictionaries'][dic_key])
-
 @app.route('/')
 def index():
+    if not data['dictionaries']:
+        data['dictionaries'] = {
+            'dic1': generar_diccionario(),
+            'dic2': generar_diccionario(),
+            'dic3': generar_diccionario()
+        }
+        for dic_key in data['dictionaries']:
+            data['winners'][dic_key] = escoger_numero(data['dictionaries'][dic_key])
     return render_template('index.html')
 
 @app.route('/tickets/<int:dic_num>/<int:page>')

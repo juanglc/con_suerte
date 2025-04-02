@@ -7,7 +7,7 @@ def generar_numero():
 
 def generar_diccionario():
     diccionario = {}
-    while len(diccionario) < 5000:
+    while len(diccionario) < 5040:
         numero = generar_numero()
         numero_str = ''.join(map(str, numero))
         if numero_str not in diccionario:
@@ -41,3 +41,5 @@ def message_creation(winner):
         message = f"El número {winner[0]} fue comprado, por lo cual el premio será repartido al ganador."
         print(message)
     return message
+
+generar_diccionario()
