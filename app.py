@@ -2,38 +2,25 @@ from flask import Flask, render_template, redirect, url_for, session, jsonify, r
 from flask_session import Session
 from numero import generar_diccionario, escoger_numero, message_creation
 import os
-import redis
-
-# Configurar Redis
-REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")  # Cambia esto con tu URL de Redis en producción
-redis_client = redis.StrictRedis.from_url(REDIS_URL, decode_responses=True)
-
-# Verificar conexión a Redis
-def check_redis_connection():
-    try:
-        redis_client.ping()
-        print("Conectado a Redis exitosamente")
-    except redis.ConnectionError:
-        print("Error: No se pudo conectar a Redis")
-        exit(1)
-
-check_redis_connection()
-
-def reset_session():
-    redis_client.flushdb()  # Reinicia los valores de la sesión limpiando Redis
+import shutil
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
-app.config['SESSION_TYPE'] = 'redis'
+app.config['SESSION_TYPE'] = 'filesystem'
+app.config['SESSION_FILE_DIR'] = './flask_sessions'  # Directorio para sesiones
 app.config['SESSION_PERMANENT'] = False
 app.config['SESSION_USE_SIGNER'] = True
-app.config['SESSION_REDIS'] = redis_client
-
 Session(app)
 
-@app.route('/')
-def index():
-    if 'dictionaries' not in session or 'winners' not in session:
+# **Elimina las sesiones previas al iniciar el servidor**
+if os.path.exists(app.config['SESSION_FILE_DIR']):
+    shutil.rmtree(app.config['SESSION_FILE_DIR'])  # Borra todas las sesiones previas
+os.makedirs(app.config['SESSION_FILE_DIR'], exist_ok=True)  # Vuelve a crear la carpeta vacía
+
+@app.before_request
+def initialize_session():
+    """ Reinicia los valores de la sesión cuando se inicia el servidor. """
+    if 'initialized' not in session:
         session['dictionaries'] = {
             'dic1': generar_diccionario(),
             'dic2': generar_diccionario(),
@@ -44,8 +31,11 @@ def index():
             'dic2': None,
             'dic3': None
         }
-        session.modified = True  # Ensure the session is updated
+        session['initialized'] = True  # Marca que la sesión ha sido iniciada correctamente
+        session.modified = True
 
+@app.route('/')
+def index():
     return render_template('index.html')
 
 @app.route('/tickets/<int:dic_num>/<int:page>')
@@ -76,14 +66,15 @@ def ganador(dic_num):
         dic = session['dictionaries'][dic_key]
         winner = escoger_numero(dic)
         session['winners'][dic_key] = winner
-        session.modified = True  # Ensure the session is saved correctly
+        session.modified = True
 
     message = message_creation(winner)
     return render_template('ganador.html', dic_num=dic_num, winner=winner, message=message)
 
 @app.route('/regenerar')
 def regenerar():
-    reset_session()  # Limpia Redis completamente
+    session.pop('dictionaries', None)
+    session.pop('winners', None)
     session['dictionaries'] = {
         'dic1': generar_diccionario(),
         'dic2': generar_diccionario(),
@@ -94,7 +85,7 @@ def regenerar():
         'dic2': None,
         'dic3': None
     }
-    session.modified = True  # Ensure the session is reset correctly
+    session.modified = True
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
