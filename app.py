@@ -2,25 +2,26 @@ from flask import Flask, render_template, redirect, url_for, session, jsonify, r
 from flask_session import Session
 from numero import generar_diccionario, escoger_numero, message_creation
 import os
-import shutil
+import redis
+
+# Configurar Redis
+REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")  # Cambia esto con tu URL de Redis en producción
+redis_client = redis.StrictRedis.from_url(REDIS_URL, decode_responses=True)
+
+def reset_session():
+    session.clear()  # Reinicia los valores de la sesión sin borrar los archivos
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
-app.config['SESSION_TYPE'] = 'filesystem'
-app.config['SESSION_FILE_DIR'] = './flask_sessions'  # Directorio para sesiones
+app.config['SESSION_TYPE'] = 'redis'
 app.config['SESSION_PERMANENT'] = False
 app.config['SESSION_USE_SIGNER'] = True
+app.config['SESSION_REDIS'] = redis_client
 Session(app)
 
-# **Elimina las sesiones previas al iniciar el servidor**
-if os.path.exists(app.config['SESSION_FILE_DIR']):
-    shutil.rmtree(app.config['SESSION_FILE_DIR'])  # Borra todas las sesiones previas
-os.makedirs(app.config['SESSION_FILE_DIR'], exist_ok=True)  # Vuelve a crear la carpeta vacía
-
-@app.before_request
-def initialize_session():
-    """ Reinicia los valores de la sesión cuando se inicia el servidor. """
-    if 'initialized' not in session:
+@app.route('/')
+def index():
+    if 'dictionaries' not in session or 'winners' not in session:
         session['dictionaries'] = {
             'dic1': generar_diccionario(),
             'dic2': generar_diccionario(),
@@ -31,11 +32,8 @@ def initialize_session():
             'dic2': None,
             'dic3': None
         }
-        session['initialized'] = True  # Marca que la sesión ha sido iniciada correctamente
-        session.modified = True
+        session.modified = True  # Ensure the session is updated
 
-@app.route('/')
-def index():
     return render_template('index.html')
 
 @app.route('/tickets/<int:dic_num>/<int:page>')
@@ -66,7 +64,7 @@ def ganador(dic_num):
         dic = session['dictionaries'][dic_key]
         winner = escoger_numero(dic)
         session['winners'][dic_key] = winner
-        session.modified = True
+        session.modified = True  # Ensure the session is saved correctly
 
     message = message_creation(winner)
     return render_template('ganador.html', dic_num=dic_num, winner=winner, message=message)
@@ -85,7 +83,7 @@ def regenerar():
         'dic2': None,
         'dic3': None
     }
-    session.modified = True
+    session.modified = True  # Ensure the session is reset correctly
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
