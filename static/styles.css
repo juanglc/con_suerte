@@ -1,0 +1,99 @@
+/* styles.css */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #0D1321;
+    color: #F0EBD8;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    background: #1A2F4D;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    color: #F0EBD8;
+}
+
+p {
+    font-size: 16px;
+    color: #F0EBD8;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+thead {
+    background-color: #0F1F34;
+    color: #F0EBD8;
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #0F1F34;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #0F1F34;
+}
+
+button {
+    background: #0F1F34;
+    color: #F0EBD8;
+    border: none;
+    padding: 10px 20px;
+    margin: 20px 0;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+button:hover {
+    background: #0D1321;
+}
+
+/* Additional styles for the Ganador page */
+.ganador-container {
+    max-width: 600px;
+    margin: 50px auto;
+    background: #F0EBD8;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.ganador-container h2 {
+    color: #D32F2F;
+    font-size: 24px;
+}
+
+.ganador-container p {
+    font-size: 18px;
+    color: #1A2F4D;
+}
+
+.ganador-container button {
+    background: #D32F2F;
+    color: #F0EBD8;
+    border: none;
+    padding: 10px 20px;
+    margin: 20px 0;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.ganador-container button:hover {
+    background: #B71C1C;
+}

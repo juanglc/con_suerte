@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lotería</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>🎟️ Lotería de Chipaque</h2>
+        <p>💰 PREMIO = 150000000</p>
+        <input type="text" id="search-dic1" placeholder="Buscar por número de boleto" onkeyup="searchTickets(1)">
+        <table>
+            <thead>
+                <tr>
+                    <th>🎫 Numero de Boleto</th>
+                    <th>📅 Fecha de Emision</th>
+                    <th>📋 Estado del Tiquete</th>
+                </tr>
+            </thead>
+            <tbody id="dic1-tbody"></tbody>
+        </table>
+        <div id="pagination-dic1"></div>
+        <a href="{{ url_for('ganador', dic_num=1) }}"><button>🏆 Encontrar Ganador</button></a>
+
+        <h2>🎟️ Lotería de Bucaramanga</h2>
+        <p>💰 PREMIO = 150000000</p>
+        <input type="text" id="search-dic2" placeholder="Buscar por número de boleto" onkeyup="searchTickets(2)">
+        <table>
+            <thead>
+                <tr>
+                    <th>🎫 Numero de Boleto</th>
+                    <th>📅 Fecha de Emision</th>
+                    <th>📋 Estado del Tiquete</th>
+                </tr>
+            </thead>
+            <tbody id="dic2-tbody"></tbody>
+        </table>
+        <div id="pagination-dic2"></div>
+        <a href="{{ url_for('ganador', dic_num=2) }}"><button>🏆 Encontrar Ganador</button></a>
+
+        <h2>🎟️ Lotería de Fuenlabrada</h2>
+        <p>💰 PREMIO = 150000000</p>
+        <input type="text" id="search-dic3" placeholder="Buscar por número de boleto" onkeyup="searchTickets(3)">
+        <table>
+            <thead>
+                <tr>
+                    <th>🎫 Numero de Boleto</th>
+                    <th>📅 Fecha de Emision</th>
+                    <th>📋 Estado del Tiquete</th>
+                </tr>
+            </thead>
+            <tbody id="dic3-tbody"></tbody>
+        </table>
+        <div id="pagination-dic3"></div>
+        <div class="button-container">
+            <a href="{{ url_for('ganador', dic_num=3) }}">
+                <button class="find-winner-btn">🏆 Encontrar Ganador</button>
+            </a>
+            <a href="{{ url_for('regenerar') }}">
+                <button class="regen-btn">🔄 Regenerar Diccionarios</button>
+            </a>
+        </div>
+    </div>
+    <script>
+        async function fetchTickets(dicNum, page) {
+            const response = await fetch(`/tickets/${dicNum}/${page}`);
+            const data = await response.json();
+            const tickets = data.tickets;
+            const total = data.total;
+            const tbody = document.querySelector(`#dic${dicNum}-tbody`);
+            tbody.innerHTML = '';
+
+            tickets.forEach(ticket => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${ticket[0]}</td>
+                    <td>${ticket[1].fecha_hora}</td>
+                    <td>${ticket[1].estado === 1 ? '✔️ Comprado' : '❌ No Comprado'}</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            updatePaginationControls(dicNum, page, total);
+        }
+
+        async function searchTickets(dicNum) {
+            const input = document.querySelector(`#search-dic${dicNum}`);
+            const query = input.value;
+            const response = await fetch(`/search/${dicNum}?query=${query}`);
+            const data = await response.json();
+            const tickets = data.tickets;
+            const tbody = document.querySelector(`#dic${dicNum}-tbody`);
+            tbody.innerHTML = '';
+
+            tickets.forEach(ticket => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${ticket[0]}</td>
+                    <td>${ticket[1].fecha_hora}</td>
+                    <td>${ticket[1].estado === 1 ? '✔️ Comprado' : '❌ No Comprado'}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function updatePaginationControls(dicNum, page, total) {
+            const itemsPerPage = 10;
+            const totalPages = Math.ceil(total / itemsPerPage);
+            const pagination = document.querySelector(`#pagination-dic${dicNum}`);
+            pagination.innerHTML = '';
+
+            const prevButton = document.createElement('button');
+            prevButton.textContent = 'Anterior';
+            prevButton.addEventListener('click', () => {
+                const newPage = page === 1 ? totalPages : page - 1;
+                fetchTickets(dicNum, newPage);
+            });
+            pagination.appendChild(prevButton);
+
+            const pageIndicator = document.createElement('span');
+            pageIndicator.textContent = ` Página ${page} de ${totalPages} `;
+            pagination.appendChild(pageIndicator);
+
+            const nextButton = document.createElement('button');
+            nextButton.textContent = 'Siguiente';
+            nextButton.addEventListener('click', () => {
+                const newPage = page === totalPages ? 1 : page + 1;
+                fetchTickets(dicNum, newPage);
+            });
+            pagination.appendChild(nextButton);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchTickets(1, 1);
+            fetchTickets(2, 1);
+            fetchTickets(3, 1);
+        });
+    </script>
+</body>
+</html>

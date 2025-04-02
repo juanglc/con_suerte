@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ganador</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="ganador-container">
+        <h1>🎉 Loterias Sergio, Paco y Luis 🎉</h1>
+        <h2>🏆 Ganador del Diccionario {{ dic_num }}:</h2>
+        <p>🎫 Número Ganador: {{ winner[0] }}</p>
+        <p>📅 Fecha y Hora: {{ winner[1]['fecha_hora'] }}</p>
+        <p>💰 Valor del Premio: {{ winner[1]['valor_premio'] }}</p>
+        <p>📋 Estado: {{ '✔️ Comprado' if winner[1]['estado'] == 1 else '❌ No Comprado' }}</p>
+        <p>{{ message }}</p>
+        <a href="{{ url_for('index') }}"><button>🔙 Volver</button></a>
+    </div>
+</body>
+</html>
