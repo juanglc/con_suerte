@@ -13,15 +13,16 @@ data = {
 
 @app.route('/')
 def index():
-    if not data['dictionaries']:
+    if not data['dictionaries']:  # Solo genera los diccionarios si aún no existen
         data['dictionaries'] = {
             'dic1': generar_diccionario(),
             'dic2': generar_diccionario(),
             'dic3': generar_diccionario()
         }
         for dic_key in data['dictionaries']:
-            data['winners'][dic_key] = escoger_numero(data['dictionaries'][dic_key])
+            data['winners'][dic_key] = escoger_numero(data['dictionaries'][dic_key])  # Solo genera una vez
     return render_template('index.html')
+
 
 @app.route('/tickets/<int:dic_num>/<int:page>')
 def tickets(dic_num, page):
@@ -56,10 +57,11 @@ def regenerar():
         'dic2': generar_diccionario(),
         'dic3': generar_diccionario()
     }
-    data['winners'] = {}
+    data['winners'] = {}  # Asegura que los ganadores sean reiniciados
     for dic_key in data['dictionaries']:
-        data['winners'][dic_key] = escoger_numero(data['dictionaries'][dic_key])
+        data['winners'][dic_key] = escoger_numero(data['dictionaries'][dic_key])  # Genera nuevos ganadores
     return redirect(url_for('index'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)
