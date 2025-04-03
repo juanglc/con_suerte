@@ -18,7 +18,8 @@ def index():
             'dic3': generar_diccionario()
         }
         app.config['DICTIONARIES'] = new_dictionaries
-        app.config['WINNERS'] = {k: escoger_numero(v) for k, v in new_dictionaries.items()}
+        if not app.config.get('WINNERS'):  # <-- Verifica si ya existe antes de regenerar
+            app.config['WINNERS'] = {k: escoger_numero(v) for k, v in new_dictionaries.items()}
     return render_template('index.html')
 
 @app.route('/tickets/<int:dic_num>/<int:page>')
@@ -42,6 +43,7 @@ def search(dic_num):
 @app.route('/ganador/<int:dic_num>')
 def ganador(dic_num):
     dic_key = f'dic{dic_num}'
+    print("Ganadores actuales:", app.config['WINNERS'])  # <-- Verificar si cambia
     winner = app.config['WINNERS'][dic_key]
     message = message_creation(winner)
     return render_template('ganador.html', dic_num=dic_num, winner=winner, message=message)
