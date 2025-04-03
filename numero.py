@@ -1,4 +1,4 @@
-from random import sample, choices
+from random import choices, sample
 from datetime import datetime
 
 def generar_numero():
@@ -19,25 +19,18 @@ def generar_diccionario():
     print(f"Diccionario generado con {len(diccionario)} elementos")
     return diccionario
 
-def imprimir_diccionario(dicc):
-    for i in sorted(dicc.keys()):
-        print(f"{i}: {dicc[i]}")
-
 def escoger_numero(dic):
-    imprimir_diccionario(dic)
     winner_key = sample(list(dic.keys()), 1)[0]
-    winner = (winner_key, dic[winner_key])
-    print("Número Ganador: ", winner[0])
-    return winner
+    return winner_key
 
-def get_key(dic):
-    return list(dic.keys())
-
-def message_creation(winner):
-    if winner[1]['estado'] == 0:
-        message = f"El número {winner[0]} no fue comprado, por lo cual el premio no será repartido."
-        print(message)
+def message_creation(winner_key, winner_value):
+    print(winner_key)
+    if winner_value['estado'] == 0:
+        return f"El número ganador {winner_key} no fue comprado, por lo que el premio no se distribuye"
     else:
-        message = f"El número {winner[0]} fue comprado, por lo cual el premio será repartido al ganador."
-        print(message)
-    return message
+        return f"El número ganador {winner_key} fue comprado, por lo que el premio se distribuye"
+
+def get_winner(dic):
+    num = escoger_numero(dic)
+    print(num)
+    return num

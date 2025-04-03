@@ -44,9 +44,10 @@ def search(dic_num):
 @app.route('/ganador/<int:dic_num>')
 def ganador(dic_num):
     dic_key = f'dic{dic_num}'
-    winner = data['winners'][dic_key]
-    message = message_creation(winner)
-    return render_template('ganador.html', dic_num=dic_num, winner=winner, message=message)
+    winner_key = data['winners'][dic_key]
+    winner_value = data['dictionaries'][dic_key][winner_key]
+    message = message_creation(winner_key, winner_value)
+    return render_template('ganador.html', dic_num=dic_num, winner=(winner_key, winner_value), message=message)
 
 @app.route('/regenerar')
 def regenerar():
