@@ -11,9 +11,7 @@ data = {
     'winners': {}
 }
 
-
-@app.route('/')
-def index():
+def initialize_data():
     if not data['dictionaries']:  # Solo se generan si aún no existen
         data['dictionaries'] = {
             'dic1': generar_diccionario(),
@@ -26,11 +24,14 @@ def index():
             if dic_key not in data['winners']:
                 data['winners'][dic_key] = escoger_numero(data['dictionaries'][dic_key])
 
+@app.route('/')
+def index():
+    initialize_data()
     return render_template('index.html')
-
 
 @app.route('/tickets/<int:dic_num>/<int:page>')
 def tickets(dic_num, page):
+    initialize_data()
     dic_key = f'dic{dic_num}'
 
     # Nos aseguramos de que el diccionario ya existe antes de acceder
@@ -45,9 +46,9 @@ def tickets(dic_num, page):
 
     return jsonify({'tickets': paginated_items, 'total': len(dic)})
 
-
 @app.route('/search/<int:dic_num>')
 def search(dic_num):
+    initialize_data()
     dic_key = f'dic{dic_num}'
     query = request.args.get('query', '').strip()
     dic = data['dictionaries'][dic_key]
@@ -56,6 +57,7 @@ def search(dic_num):
 
 @app.route('/ganador/<int:dic_num>')
 def ganador(dic_num):
+    initialize_data()
     dic_key = f'dic{dic_num}'
     winner_key = data['winners'][dic_key]
     winner_value = data['dictionaries'][dic_key][winner_key]
@@ -66,19 +68,8 @@ def ganador(dic_num):
 def regenerar():
     data['dictionaries'].clear()
     data['winners'].clear()
-
-    data['dictionaries'] = {
-        'dic1': generar_diccionario(),
-        'dic2': generar_diccionario(),
-        'dic3': generar_diccionario()
-    }
-
-    for dic_key in data['dictionaries']:
-        data['winners'][dic_key] = escoger_numero(data['dictionaries'][dic_key])
-
+    initialize_data()
     return redirect(url_for('index'))
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)
