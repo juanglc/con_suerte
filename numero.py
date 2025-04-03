@@ -2,12 +2,12 @@ from random import sample, choices
 from datetime import datetime
 
 def generar_numero():
-    numero_gen = sample(range(10), 4)
+    numero_gen = choices(range(10), k=4)
     return numero_gen
 
 def generar_diccionario():
     diccionario = {}
-    while len(diccionario) < 10:
+    while len(diccionario) < 10000:
         numero = generar_numero()
         numero_str = ''.join(map(str, numero))
         if numero_str not in diccionario:
@@ -41,5 +41,3 @@ def message_creation(winner):
         message = f"El número {winner[0]} fue comprado, por lo cual el premio será repartido al ganador."
         print(message)
     return message
-
-generar_diccionario()
