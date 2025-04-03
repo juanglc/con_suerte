@@ -1,9 +1,20 @@
-from flask import Flask, render_template, redirect, url_for, jsonify, request
+from flask import Flask, render_template, redirect, url_for, jsonify, request, session
+from flask_session import Session
 from numero import generar_diccionario, escoger_numero, message_creation
 import os
+import redis
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
+
+# Configuración de Redis
+app.config['SESSION_TYPE'] = 'redis'
+app.config['SESSION_PERMANENT'] = False
+app.config['SESSION_USE_SIGNER'] = True
+app.config['SESSION_REDIS'] = redis.from_url('redis://localhost:6379')
+
+# Inicializar la extensión de sesión
+Session(app)
 
 # Diccionario global para almacenar los diccionarios y los ganadores
 data = {
