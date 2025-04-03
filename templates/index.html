@@ -22,7 +22,7 @@
             <tbody id="dic1-tbody"></tbody>
         </table>
         <div id="pagination-dic1"></div>
-        <a href="{{ url_for('ganador', dic_num=1) }}"><button>🏆 Encontrar Ganador</button></a>
+        <button onclick="fetchWinner(1)">🏆 Encontrar Ganador</button>
 
         <h2>🎟️ Lotería de Bucaramanga</h2>
         <p>💰 PREMIO = 150000000</p>
@@ -38,7 +38,7 @@
             <tbody id="dic2-tbody"></tbody>
         </table>
         <div id="pagination-dic2"></div>
-        <a href="{{ url_for('ganador', dic_num=2) }}"><button>🏆 Encontrar Ganador</button></a>
+        <button onclick="fetchWinner(2)">🏆 Encontrar Ganador</button>
 
         <h2>🎟️ Lotería de Fuenlabrada</h2>
         <p>💰 PREMIO = 150000000</p>
@@ -54,10 +54,11 @@
             <tbody id="dic3-tbody"></tbody>
         </table>
         <div id="pagination-dic3"></div>
+        <button onclick="fetchWinner(3)">🏆 Encontrar Ganador</button>
+
+        <div id="winner-info"></div>
+
         <div class="button-container">
-            <a href="{{ url_for('ganador', dic_num=3) }}">
-                <button class="find-winner-btn">🏆 Encontrar Ganador</button>
-            </a>
             <hr>
             <a href="{{ url_for('regenerar') }}">
                 <button class="regen-btn">🔄 Regenerar Diccionarios</button>
@@ -131,6 +132,20 @@
                 fetchTickets(dicNum, newPage);
             });
             pagination.appendChild(nextButton);
+        }
+
+        async function fetchWinner(dicNum) {
+            const response = await fetch(`/ganador/${dicNum}`);
+            const data = await response.json();
+            const winnerInfo = document.getElementById('winner-info');
+            winnerInfo.innerHTML = `
+                <h2>🏆 Ganador del Diccionario ${dicNum}:</h2>
+                <p>🎫 Número Ganador: ${data.winner[0]}</p>
+                <p>📅 Fecha y Hora: ${data.winner[1].fecha_hora}</p>
+                <p>💰 Valor del Premio: ${data.winner[1].valor_premio}</p>
+                <p>📋 Estado: ${data.winner[1].estado === 1 ? '✔️ Comprado' : '❌ No Comprado'}</p>
+                <p>${data.message}</p>
+            `;
         }
 
         document.addEventListener('DOMContentLoaded', () => {
