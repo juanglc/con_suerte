@@ -11,6 +11,7 @@ data = {
     'winners': {}
 }
 
+
 @app.route('/')
 def index():
     if not data['dictionaries']:  # Solo genera los diccionarios si aún no existen
@@ -19,8 +20,12 @@ def index():
             'dic2': generar_diccionario(),
             'dic3': generar_diccionario()
         }
+
+    if not data['winners']:  # Solo genera los ganadores si no existen
         for dic_key in data['dictionaries']:
-            data['winners'][dic_key] = escoger_numero(data['dictionaries'][dic_key])  # Solo genera una vez
+            if dic_key not in data['winners']:  # Solo asigna si aún no hay un ganador
+                data['winners'][dic_key] = escoger_numero(data['dictionaries'][dic_key])
+
     return render_template('index.html')
 
 
