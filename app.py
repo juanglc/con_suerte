@@ -14,16 +14,16 @@ data = {
 
 @app.route('/')
 def index():
-    if not data['dictionaries']:  # Solo genera los diccionarios si aún no existen
+    if not data['dictionaries']:  # Solo se generan si aún no existen
         data['dictionaries'] = {
             'dic1': generar_diccionario(),
             'dic2': generar_diccionario(),
             'dic3': generar_diccionario()
         }
 
-    if not data['winners']:  # Solo genera los ganadores si no existen
+    if not data['winners']:  # Solo se asignan ganadores si no existen
         for dic_key in data['dictionaries']:
-            if dic_key not in data['winners']:  # Solo asigna si aún no hay un ganador
+            if dic_key not in data['winners']:
                 data['winners'][dic_key] = escoger_numero(data['dictionaries'][dic_key])
 
     return render_template('index.html')
@@ -32,12 +32,19 @@ def index():
 @app.route('/tickets/<int:dic_num>/<int:page>')
 def tickets(dic_num, page):
     dic_key = f'dic{dic_num}'
+
+    # Nos aseguramos de que el diccionario ya existe antes de acceder
+    if dic_key not in data['dictionaries']:
+        return jsonify({'error': 'Diccionario no encontrado'}), 404
+
     dic = data['dictionaries'][dic_key]
     items_per_page = 10
     start = (page - 1) * items_per_page
     end = start + items_per_page
     paginated_items = list(dic.items())[start:end]
+
     return jsonify({'tickets': paginated_items, 'total': len(dic)})
+
 
 @app.route('/search/<int:dic_num>')
 def search(dic_num):
@@ -57,15 +64,20 @@ def ganador(dic_num):
 
 @app.route('/regenerar')
 def regenerar():
+    data['dictionaries'].clear()
+    data['winners'].clear()
+
     data['dictionaries'] = {
         'dic1': generar_diccionario(),
         'dic2': generar_diccionario(),
         'dic3': generar_diccionario()
     }
-    data['winners'] = {}  # Asegura que los ganadores sean reiniciados
+
     for dic_key in data['dictionaries']:
-        data['winners'][dic_key] = escoger_numero(data['dictionaries'][dic_key])  # Genera nuevos ganadores
+        data['winners'][dic_key] = escoger_numero(data['dictionaries'][dic_key])
+
     return redirect(url_for('index'))
+
 
 
 if __name__ == '__main__':
