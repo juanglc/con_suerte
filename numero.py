@@ -23,12 +23,10 @@ def imprimir_diccionario(dicc):
     for i in sorted(dicc.keys()):
         print(f"{i}: {dicc[i]}")
 
-def escoger_numero(dic):
-    imprimir_diccionario(dic)
-    winner_key = sample(list(dic.keys()), 1)[0]
-    winner = (winner_key, dic[winner_key])
-    print("Número Ganador: ", winner[0])
-    return winner
+def escoger_numero(diccionario):
+       # Asegúrate de que el método de selección del ganador sea consistente
+       # Por ejemplo, ordenar las claves y seleccionar la primera
+       return sorted(diccionario.items(), key=lambda x: x[1])[0]
 
 def get_key(dic):
     return list(dic.keys())
