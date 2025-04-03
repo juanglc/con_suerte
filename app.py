@@ -60,7 +60,7 @@ def ganador(dic_num):
     winner_key = data['winners'][dic_key]
     winner_value = data['dictionaries'][dic_key][winner_key]
     message = message_creation(winner_key, winner_value)
-    return jsonify({'winner': (winner_key, winner_value), 'message': message})
+    return render_template('ganador.html', dic_num=dic_num, winner=(winner_key, winner_value), message=message)
 
 @app.route('/regenerar')
 def regenerar():
