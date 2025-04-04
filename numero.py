@@ -7,7 +7,7 @@ def generar_numero():
 
 def generar_diccionario():
     diccionario = {}
-    while len(diccionario) < 100:
+    while len(diccionario) < 10000:
         numero = generar_numero()
         numero_str = ''.join(map(str, numero))
         if numero_str not in diccionario:
