@@ -7,7 +7,10 @@ def generar_numero():
 
 def generar_diccionario():
     diccionario = {}
-    while len(diccionario) < 10000:
+    cifras = 10000
+    if cifras > 10000 or cifras < 10:
+        return "manco"
+    while len(diccionario) < cifras:
         numero = generar_numero()
         numero_str = ''.join(map(str, numero))
         if numero_str not in diccionario:
@@ -17,6 +20,7 @@ def generar_diccionario():
                 'valor_premio': '$150.000.000'
             }
     print(f"Diccionario generado con {len(diccionario)} elementos")
+    imprimir_diccionario(diccionario)
     return diccionario
 
 def escoger_numero(dic):
@@ -32,5 +36,9 @@ def message_creation(winner_key, winner_value):
 
 def get_winner(dic):
     num = escoger_numero(dic)
-    print(num)
+    print("El número ganador es:", num)
     return num
+
+def imprimir_diccionario(dic):
+    for key, value in dic.items():
+        print(f"Clave: {key}, Valor: {value}")
